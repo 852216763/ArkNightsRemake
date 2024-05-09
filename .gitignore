@@ -13,11 +13,12 @@
 /Assets/Arts/
 /Assets/Audio/
 /Assets/Font/
-/Assets/Scripts/*test*
 /Assets/SpineAsset/
 /Assets/SpritePack/
 
 /Assets/SpriteOut/
+/Assets/Scripts/*test*
+/Assets/Scenes/*test*
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
