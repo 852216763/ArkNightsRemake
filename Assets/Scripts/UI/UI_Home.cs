@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Framework;
 using Spine.Unity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,6 +15,16 @@ public class UI_Home : UIForm
 {
     readonly Vector2 CanvasScalerResolution = new Vector2(1280, 720);
     uint? bgmID;
+
+    #region 手机信息
+    [SerializeField]
+    TextMeshProUGUI sysTime;
+    [SerializeField]
+    Image sysBattery;
+    [SerializeField]
+    Sprite[] batteryIcons;
+    int sysCurrentBatteryLevel = 0;
+    #endregion
 
     #region UI晃动参数
     readonly float floatUIAnimDuration = 0.5f;
@@ -138,6 +149,8 @@ public class UI_Home : UIForm
     protected override void OnUpdate()
     {
         base.OnUpdate();
+        // 更新抬头系统信息
+        UpdateSysInfo();
 
         // UI晃动
         UpdateFloatUIOffset();
@@ -173,6 +186,20 @@ public class UI_Home : UIForm
         base.OnClose(userdata);
     }
 
+    #region 手机信息
+    private void UpdateSysInfo()
+    {
+        int batteryLevel = Mathf.RoundToInt(SystemInfo.batteryLevel * (batteryIcons.Length - 1));
+        if (batteryLevel != sysCurrentBatteryLevel)
+        {
+            sysBattery.sprite = batteryIcons[batteryLevel];
+            sysCurrentBatteryLevel = batteryLevel;
+        }
+
+        sysTime.text = DateTime.Now.ToString("yyyy/MM/dd HH:mm");
+    }
+
+    #endregion
 
     #region UI晃动
     private void AdaptFloatUIScale()
