@@ -11,6 +11,7 @@ public class ScrollViewSplitByPageEditor : ScrollRectEditor
     SerializedProperty autoScroll;
     SerializedProperty flipInterval;
     SerializedProperty flipDuration;
+    SerializedProperty sensitive;
     SerializedProperty toggleParent;
 
     protected override void OnEnable()
@@ -19,6 +20,7 @@ public class ScrollViewSplitByPageEditor : ScrollRectEditor
         autoScroll = serializedObject.FindProperty("autoScroll");
         flipInterval = serializedObject.FindProperty("flipInterval");
         flipDuration = serializedObject.FindProperty("flipDuration");
+        sensitive = serializedObject.FindProperty("sensitive");
         toggleParent = serializedObject.FindProperty("toggleParent");
     }
 
@@ -29,6 +31,7 @@ public class ScrollViewSplitByPageEditor : ScrollRectEditor
         EditorGUILayout.PropertyField(autoScroll);
         EditorGUILayout.PropertyField(flipInterval);
         EditorGUILayout.PropertyField(flipDuration);
+        EditorGUILayout.PropertyField(sensitive);
         EditorGUILayout.PropertyField(toggleParent);
         serializedObject.ApplyModifiedProperties();
     }

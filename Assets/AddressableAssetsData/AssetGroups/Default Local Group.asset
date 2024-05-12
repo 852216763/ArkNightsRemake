@@ -33,6 +33,14 @@ MonoBehaviour:
     m_Address: Assets/Font
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: ebb9e2555e7a5f744a4126706649493c
+    m_Address: Assets/Arts/Char
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5fd7b4edffd38594488bed1f61ffac5b
+    m_Address: Assets/GameData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f966627bab6fc7e4d8bec8c90a4ca00e, type: 2}
   m_SchemaSet:

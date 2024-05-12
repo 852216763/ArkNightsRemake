@@ -13,6 +13,8 @@ public class ScrollViewSplitByPage : ScrollRect
     public float flipInterval = 2;
     [Tooltip("滚动动画时长")]
     public float flipDuration = 0.5f;
+    [Tooltip("翻页灵敏度,仅对小幅拖动翻页有效"), Range(0,1)]
+    public float sensitive = 1;
     private WaitForSeconds flipIntervalYield;
 
     public Transform toggleParent;
@@ -27,9 +29,9 @@ public class ScrollViewSplitByPage : ScrollRect
     {
         base.Start();
         CalculatePageInfo();
-        horizontalNormalizedPosition = 0;
-        currentPage = 0;
-        //currentPage = Mathf.RoundToInt(horizontalNormalizedPosition / pageStepPercent);
+        //horizontalNormalizedPosition = 0;
+        //currentPage = 0;
+        currentPage = Mathf.RoundToInt(horizontalNormalizedPosition / pageStepPercent);
 
         if (autoScroll)
         {
@@ -84,14 +86,37 @@ public class ScrollViewSplitByPage : ScrollRect
         StopAllCoroutines();
     }
 
+    public override void OnBeginDrag(PointerEventData eventData)
+    {
+        base.OnBeginDrag(eventData);
+        if (tween != null)
+        {
+            tween.Kill();
+        }
+    }
+
     public override void OnEndDrag(PointerEventData eventData)
     {
         base.OnEndDrag(eventData);
+        Debug.Log("拖动结束");
         float horizon = horizontalNormalizedPosition;
         horizon = Mathf.Clamp(horizon, 0, 1);
         int page = Mathf.RoundToInt(horizon / pageStepPercent);
+        if (page == currentPage)
+        {
+            float interval = horizontalNormalizedPosition / pageStepPercent - currentPage;
+            if (interval < -sensitive && page > 0)
+            {
+                page--;
+            }
+            if (interval > sensitive && page < content.childCount - 1)
+            {
+                page++;
+            }
+        }
         if (toggleParent != null)
         {
+            toggleList[page].isOn = false;
             toggleList[page].isOn = true;
             return;
         }
@@ -110,14 +135,13 @@ public class ScrollViewSplitByPage : ScrollRect
 
     private void GotoPage(int pageNum)
     {
-        if (pageNum == currentPage || pageNum >= content.childCount || pageNum < 0)
+        if (pageNum >= content.childCount || pageNum < 0)
         {
             return;
         }
         if (tween != null)
         {
-            tween.Complete();
-            tween = null;
+            tween.Kill();
         }
         currentPage = pageNum;
         float pagePercent = pageStepPercent * currentPage;
@@ -125,7 +149,7 @@ public class ScrollViewSplitByPage : ScrollRect
             () => horizontalNormalizedPosition,
             value => horizontalNormalizedPosition = value,
             pagePercent, flipDuration);
-        tween.onKill = () => { tween = null; };
+        tween.onKill = () => {tween = null; };
     }
 
     public void NextPage()

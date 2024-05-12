@@ -17,6 +17,7 @@ public class UI_Home : UIForm
     uint? bgmID;
 
     #region 手机信息
+    [Header("手机信息")]
     [SerializeField]
     TextMeshProUGUI sysTime;
     [SerializeField]
@@ -24,6 +25,28 @@ public class UI_Home : UIForm
     [SerializeField]
     Sprite[] batteryIcons;
     int sysCurrentBatteryLevel = 0;
+    [Space]
+    #endregion
+
+    #region 用户信息
+    [Header("用户信息")]
+    [SerializeField]
+    TextMeshProUGUI userName;
+    [SerializeField]
+    TextMeshProUGUI userLevel;
+    [SerializeField]
+    TextMeshProUGUI userID;
+    [SerializeField]
+    TextMeshProUGUI money;
+    [SerializeField]
+    TextMeshProUGUI jade;
+    [SerializeField]
+    TextMeshProUGUI diamond;
+    [SerializeField]
+    TextMeshProUGUI ap;
+    [SerializeField]
+    TextMeshProUGUI maxAP;
+    [Space]
     #endregion
 
     #region UI晃动参数
@@ -46,16 +69,19 @@ public class UI_Home : UIForm
     #endregion
 
     #region 观景模式参数
-    readonly float changeObserveModeDuration = 0.2f;
-
+    [Header("观景模式")]
     [SerializeField]
     Button observeBtn;
     [SerializeField]
     Button exitObserveBtn;
     bool isObserveMode;
+
+    readonly float changeObserveModeDuration = 0.2f;
+    [Space]
     #endregion
 
     #region 助理
+    [Header("助理")]
     [SerializeField]
     RectTransform voiceDialog;
     TextMeshProUGUI voiceDialogText;
@@ -64,11 +90,12 @@ public class UI_Home : UIForm
     float idleTimer;
 
     Transform assistant;
-    bool isDynamicSprite;
     SkeletonGraphic assistantSpine;
     readonly float assistantSpecialAnimInterval = 15f;
     WaitForSeconds assistantSpecialAnimYield;
     IEnumerator specialAnim_CO;
+
+    [Space]
     #endregion
 
 
@@ -94,9 +121,12 @@ public class UI_Home : UIForm
         background = environmentPanel.Find("Bg");
         assistant = environmentPanel.Find("Assistant");
         assistantSpine = assistant.GetComponent<SkeletonGraphic>();
-        isDynamicSprite = assistantSpine != null;
 
-        // UI
+        // 按钮事件注册
+        Button characterBtn = floatUIRight.Find("CharacterBtn").GetComponent<Button>();
+        characterBtn.onClick.AddListener(() => FrameworkEntry.UI.ShowUI(Constant.UIAsset_Character));
+
+        // UI适配
         AdaptFloatUIScale();
         defaultFloatUILeftPosition = floatUILeft.localPosition;
         defaultFloatUIRightPosition = floatUIRight.localPosition;
@@ -129,13 +159,19 @@ public class UI_Home : UIForm
             new List<string> { Constant.SoundAsset_sys_home_intro, Constant.SoundAsset_sys_home_loop },
             Constant.SoundGroupName_BGM, sp);
 
-        if (isDynamicSprite)
+        // 更新用户信息
+        UpdatePlayerInfo();
+
+
+        // 动态立绘动画
+        if (assistantSpine != null)
         {
             assistantSpecialAnimYield = new WaitForSeconds(assistantSpecialAnimInterval);
             specialAnim_CO = AssistantSpecialAnim_CO();
             StartCoroutine(specialAnim_CO);
         }
 
+        // 看板问候
         idleTimer = 0;
         ShowVoiceDialog("问候     开屏问候文本");
 
@@ -149,6 +185,11 @@ public class UI_Home : UIForm
     protected override void OnUpdate()
     {
         base.OnUpdate();
+        if (FrameworkEntry.UI.TopUI != gameObject)
+        {
+            return;
+        }
+
         // 更新抬头系统信息
         UpdateSysInfo();
 
@@ -175,7 +216,7 @@ public class UI_Home : UIForm
     {
         base.OnHide(userdata);
 
-        if (isDynamicSprite)
+        if (assistantSpine != null)
         {
             StopCoroutine(specialAnim_CO);
         }
@@ -201,14 +242,41 @@ public class UI_Home : UIForm
 
     #endregion
 
+    #region 用户信息
+    private void UpdatePlayerInfo()
+    {
+        userName.text = PlayerData.Instance.UserName;
+        userLevel.text = PlayerData.Instance.UserLevel.ToString();
+        userID.text = "ID:" + PlayerData.Instance.UserID.ToString();
+        ap.text = PlayerData.Instance.Ap.ToString();
+        maxAP.text = "理智/" + PlayerData.Instance.MaxAP.ToString();
+        money.text = PlayerData.Instance.Money.ToString();
+        jade.text = PlayerData.Instance.Jade.ToString();
+        diamond.text = PlayerData.Instance.Diamond.ToString();
+    }
+
+    public void OnAddJadeBtnClick()
+    {
+        PlayerData.Instance.Jade += 500;
+        UpdatePlayerInfo();
+    }
+
+    public void OnAddDiamondBtnClick()
+    {
+        PlayerData.Instance.Diamond += 10;
+        UpdatePlayerInfo();
+    }
+
+    #endregion
+
     #region UI晃动
     private void AdaptFloatUIScale()
     {
         float safeWidth = Screen.safeArea.width;
         float safeHeight = Screen.safeArea.height;
-        float scaleX = safeWidth / CanvasScalerResolution.x;
         float scaleY = safeHeight / CanvasScalerResolution.y;
-        Vector3 scale = new Vector3(scaleX, scaleY, 1);
+        float scaleX = safeWidth / scaleY / CanvasScalerResolution.x;
+        Vector3 scale = new Vector3(scaleX, 1, 1);
 
         floatPanel.localScale = scale;
         environmentPanel.localScale = scale;
@@ -221,8 +289,8 @@ public class UI_Home : UIForm
             return;
         }
 
-        float accX;
-        float accY;
+        float accX = 0;
+        float accY = 0;
 #if UNITY_ANDROID && false
         accX = Input.gyro.userAcceleration.x;
         accY = Input.gyro.userAcceleration.y;
@@ -259,11 +327,11 @@ public class UI_Home : UIForm
         }
         if (accY > yTriggerThreshold)
         {
-            uiAnimSequence.Join(background.DOMoveY(-floatUIBgMaxOffset, floatUIAnimDuration));
+            uiAnimSequence.Join(background.DOLocalMoveY(-floatUIBgMaxOffset, floatUIAnimDuration));
         }
         else if (accY < -yTriggerThreshold)
         {
-            uiAnimSequence.Join(background.DOMoveY(floatUIBgMaxOffset, floatUIAnimDuration));
+            uiAnimSequence.Join(background.DOLocalMoveY(floatUIBgMaxOffset, floatUIAnimDuration));
         }
         uiAnimSequence.AppendInterval(resetDuration / 2);
         uiAnimSequence.onComplete = () =>
@@ -348,7 +416,7 @@ public class UI_Home : UIForm
 
     private void OnClickAssistant()
     {
-        if (isDynamicSprite)
+        if (assistantSpine != null)
         {
             assistantSpine.AnimationState.SetAnimation(0, "Interact", false)
                 .Complete += trackEntry =>
@@ -365,7 +433,7 @@ public class UI_Home : UIForm
     private IEnumerator AssistantSpecialAnim_CO()
     {
         yield return assistantSpecialAnimYield;
-        if (isDynamicSprite)
+        if (assistantSpine != null && FrameworkEntry.UI.TopUI == gameObject)
         {
             assistantSpine.AnimationState.AddAnimation(0, "Special", false, 0)
                 .Complete += trackEntry =>
