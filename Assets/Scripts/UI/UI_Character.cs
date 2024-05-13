@@ -92,6 +92,16 @@ public class UI_Character : UIForm
 
     private void RegisteCardBtnClickEvent()
     {
-
+        List<CharCard> cardList = cardContent.charCardItemList;
+        foreach (CharCard item in cardList)
+        {
+            Button btn = item.GetComponent<Button>();
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() =>
+            {
+                UI_CharInfo charInfo = FrameworkEntry.UI.ShowUI(Constant.UIAsset_CharInfo).GetComponent<UI_CharInfo>();
+                charInfo?.UpdateData(cardContent.charDataList, item.Data);
+            });
+        }
     }
 }

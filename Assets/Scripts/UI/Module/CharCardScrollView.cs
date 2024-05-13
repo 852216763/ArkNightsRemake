@@ -10,16 +10,14 @@ public class CharCardScrollView : MonoBehaviour
     Transform charCardContent;
 
     public List<CharCard> charCardItemList;
+    public List<CharData> charDataList;
 
     public void RefreshScrollContent(List<CharData> showCharList)
     {
+        charDataList = showCharList;
         if (charCardItemList == null)
         {
             charCardItemList = new List<CharCard>();
-        }
-        foreach (CharData item in showCharList)
-        {
-            Debug.Log($"角色: {item.CharID}");
         }
 
         int i = 0;

@@ -23,7 +23,7 @@ public class CharMeta
     private CharProfession profession;
 
     [Header("可部署地形"), SerializeField]
-    private CharPosition[] charPosition;
+    private CharPosition charPosition;
 
     [Header("阵营"), SerializeField]
     private CharCamp camp;
@@ -98,7 +98,7 @@ public class CharMeta
     /// <summary>
     /// 可部署地形
     /// </summary>
-    public CharPosition[] CharPosition { get => charPosition; set => charPosition = value; }
+    public CharPosition CharPosition { get => charPosition; set => charPosition = value; }
 
     /// <summary>
     /// 阵营

@@ -44,6 +44,7 @@ public class Constant : MonoBehaviour
     public const string UIAsset_Login = UIAssetPath + "UI_login.prefab";
     public const string UIAsset_Home = UIAssetPath + "UI_home.prefab";
     public const string UIAsset_Character = UIAssetPath + "UI_character.prefab";
+    public const string UIAsset_CharInfo = UIAssetPath + "UI_charInfo.prefab";
     #endregion
 
     #region 通用UI动画参数

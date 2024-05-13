@@ -19,7 +19,7 @@ MonoBehaviour:
     englishName: Skadi the Corrupting Heart
     rarity: 6
     profession: 6
-    charPosition: 01000000
+    charPosition: 1
     camp: 0
     tags: 050000000100000002000000
     attributes:
@@ -980,7 +980,7 @@ MonoBehaviour:
     englishName: Bagpipe
     rarity: 6
     profession: 7
-    charPosition: 00000000
+    charPosition: 0
     camp: 0
     tags: 0d00000002000000
     attributes:
@@ -1929,7 +1929,7 @@ MonoBehaviour:
     englishName: Astesi
     rarity: 5
     profession: 2
-    charPosition: 00000000
+    charPosition: 0
     camp: 0
     tags: 0200000006000000
     attributes:
@@ -2757,9 +2757,9 @@ MonoBehaviour:
     englishName: Gravel
     rarity: 4
     profession: 5
-    charPosition: 00000000
+    charPosition: 0
     camp: 0
-    tags: 0c00000006000000
+    tags: 0c000000
     attributes:
     - maxHealth: 1000
       attack: 250
@@ -3485,7 +3485,7 @@ MonoBehaviour:
     englishName: Cardigan
     rarity: 3
     profession: 1
-    charPosition: 00000000
+    charPosition: 0
     camp: 0
     tags: 06000000
     attributes:
@@ -3892,7 +3892,7 @@ MonoBehaviour:
     englishName: Yato
     rarity: 2
     profession: 7
-    charPosition: 00000000
+    charPosition: 0
     camp: 0
     tags: 0e000000
     attributes:

@@ -25,6 +25,11 @@ public class ScrollViewSplitByPage : ScrollRect
 
     Tweener tween;
 
+    /// <summary>
+    /// 当前页
+    /// </summary>
+    public int CurrentPage { get => currentPage; }
+
     protected override void Start()
     {
         base.Start();
