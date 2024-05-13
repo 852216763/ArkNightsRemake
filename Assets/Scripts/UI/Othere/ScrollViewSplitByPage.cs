@@ -70,10 +70,22 @@ public class ScrollViewSplitByPage : ScrollRect
             }
         }
 
+
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
         if (autoScroll)
         {
             StartCoroutine(AutoFlipPage_CO());
         }
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        StopAllCoroutines();
     }
 
     IEnumerator AutoFlipPage_CO()
