@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class Constant : MonoBehaviour
 {
+    #region 设置
+    public const string SettingPlayerPrefs_KeepX2 = "Setting_KeepX2";
+    public const string SettingPlayerPrefs_MusicMute = "Setting_MusicMute";
+    public const string SettingPlayerPrefs_MusicVolume = "MusicVolume";
+    public const string SettingPlayerPrefs_UISFXMute = "Setting_UISFXMute";
+    public const string SettingPlayerPrefs_UISFXVolume = "UISFXVolume";
+    public const string SettingPlayerPrefs_VoiceMute = "Setting_VoiceMute";
+    public const string SettingPlayerPrefs_VoiceVolume = "VoiceVolume";
+
+    #endregion
     #region 音频资源路径
     private const string SoundAssetPath_BGM = "Assets/Audio/Bgm/";
     public const string SoundAsset_sys_title_intro = SoundAssetPath_BGM + "sys_title_intro.ogg";
@@ -45,6 +55,7 @@ public class Constant : MonoBehaviour
     public const string UIAsset_Home = UIAssetPath + "UI_home.prefab";
     public const string UIAsset_Character = UIAssetPath + "UI_character.prefab";
     public const string UIAsset_CharInfo = UIAssetPath + "UI_charInfo.prefab";
+    public const string UIAsset_Setting = UIAssetPath + "UI_setting.prefab";
     #endregion
 
     #region 通用UI动画参数

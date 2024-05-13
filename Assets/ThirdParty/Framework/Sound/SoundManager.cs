@@ -34,7 +34,6 @@ namespace Framework
             _soundManagerRoot = new GameObject("SoundManagerRoot").transform;
             _soundManagerRoot.SetParent(root.transform);
 
-            // TODO 将写死的audiomixer路径改为Define变量
             _mainMixer = _resourceManager.LoadAsset<AudioMixer>("mainMixer");
 
             _soundGroupMap = new Dictionary<string, SoundGroup>();
@@ -229,6 +228,17 @@ namespace Framework
                 Debugger.LogWarning("混合切换快照时,指定的快照数与权重数不匹配");
             }
             _mainMixer.TransitionToSnapshots(snapshots.ToArray(), weights, reachTime);
+        }
+
+        /// <summary>
+        /// 声音滑动条数值映射为分贝值
+        /// </summary>
+        /// <param name="x">滑动条值[0,1]</param>
+        /// <returns>db值[-80,0]</returns>
+        public static float Remap01ToDB(float x)
+        {
+            if (x < 0.01f) x = 0.0001f;
+            return Mathf.Log10(x) * 20.0f;
         }
 
         #endregion

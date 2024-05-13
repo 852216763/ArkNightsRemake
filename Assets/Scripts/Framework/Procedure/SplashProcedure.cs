@@ -48,9 +48,11 @@ public class SplashProcedure : ProcedureBase
         group = FrameworkEntry.Sound.AddSoundGroup(Constant.SoundGroupName_BGM);
         group.Capacity = 1;
         group.ReplaceOnEqualPriority = true;
+        group.SetAllMuteState(PlayerPrefs.GetInt(Constant.SettingPlayerPrefs_MusicMute, 0) == 1);
 
         // UISFX
         group = FrameworkEntry.Sound.AddSoundGroup(Constant.SoundGroupName_UISFX);
+        group.SetAllMuteState(PlayerPrefs.GetInt(Constant.SettingPlayerPrefs_UISFXMute, 0) == 1);
 
         // BattleSFX
         group = FrameworkEntry.Sound.AddSoundGroup(Constant.SoundGroupName_BattleSFX);
@@ -61,5 +63,6 @@ public class SplashProcedure : ProcedureBase
         group = FrameworkEntry.Sound.AddSoundGroup(Constant.SoundGroupName_CharacterVoice);
         group.Capacity = 1;
         group.ReplaceOnEqualPriority = true;
+        group.SetAllMuteState(PlayerPrefs.GetInt(Constant.SettingPlayerPrefs_VoiceMute, 0) == 1);
     }
 }

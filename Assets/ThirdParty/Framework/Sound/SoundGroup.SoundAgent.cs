@@ -94,7 +94,7 @@ namespace Framework
                     {
                         return;
                     }
-                    if (_paused == value)
+                    if (@as.mute == value)
                     {
                         return;
                     }

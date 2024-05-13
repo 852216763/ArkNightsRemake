@@ -41,6 +41,10 @@ MonoBehaviour:
     m_Address: Assets/GameData
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 515bcecccf5104546be12f89d1d61b87
+    m_Address: mainMixer
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f966627bab6fc7e4d8bec8c90a4ca00e, type: 2}
   m_SchemaSet:

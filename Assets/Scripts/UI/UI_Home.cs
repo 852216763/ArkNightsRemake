@@ -112,6 +112,10 @@ public class UI_Home : UIForm
     {
         base.OnInit(userdata);
         staticPanel = transform.Find("StaticPanel");
+        staticPanel.GetChild(0).Find("SettingBtn").GetComponent<Button>().onClick.AddListener(() =>
+        {
+            FrameworkEntry.UI.ShowUI(Constant.UIAsset_Setting);
+        });
         floatPanel = transform.Find("FloatPanel");
         floatPanel.GetComponent<Canvas>().worldCamera = FrameworkEntry.UI.UICamera;
         floatUILeft = floatPanel.Find("LeftPanel");

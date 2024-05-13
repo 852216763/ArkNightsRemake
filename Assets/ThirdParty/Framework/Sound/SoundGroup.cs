@@ -329,7 +329,7 @@ namespace Framework
         /// <param name="mute">静音状态</param>
         public void SetAllMuteState(bool mute = true)
         {
-            _isMuted = true;
+            _isMuted = mute;
             foreach (KeyValuePair<uint, SoundAgent> item in _localAudioAgentMap)
             {
                 item.Value.Mute = mute;

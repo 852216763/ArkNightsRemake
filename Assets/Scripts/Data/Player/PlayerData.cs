@@ -173,7 +173,6 @@ public class PlayerData
     /// </summary>
     public void Init()
     {
-        PlayerPrefs.DeleteAll();
         _ap = PlayerPrefs.GetInt("AP", 49);
         _userLevel = PlayerPrefs.GetInt("", 120);
         _userName = PlayerPrefs.GetString("UserName", "Doc");
