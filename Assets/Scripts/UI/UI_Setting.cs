@@ -35,6 +35,8 @@ public class UI_Setting : UIForm
     [SerializeField]
     Scrollbar voiceScrollBar;
 
+    RenderTexture _blurCache;
+
     protected override void OnInit(object userdata = null)
     {
         base.OnInit(userdata);
@@ -174,8 +176,8 @@ public class UI_Setting : UIForm
             Transform handler = voiceVolume.transform.Find("Handler");
             handler.DOComplete();
             handler.DOLocalMoveX(-handler.transform.localPosition.x, tweenDuration);
-            PlayerPrefs.SetInt(Constant.SettingPlayerPrefs_UISFXMute, isOn ? 0 : 1);
-            FrameworkEntry.Sound.SetGroupMuteState(Constant.SoundGroupName_UISFX, !isOn);
+            PlayerPrefs.SetInt(Constant.SettingPlayerPrefs_VoiceMute, isOn ? 0 : 1);
+            FrameworkEntry.Sound.SetGroupMuteState(Constant.SoundGroupName_CharacterVoice, !isOn);
         });
         voiceScrollBar.value = PlayerPrefs.GetFloat(Constant.SettingPlayerPrefs_VoiceVolume, 1);
         voiceScrollBar.transform.GetComponentInChildren<TextMeshProUGUI>(true).text = ((int)(voiceScrollBar.value * 100)).ToString();
@@ -193,6 +195,16 @@ public class UI_Setting : UIForm
     {
         base.OnShow(userdata);
 
+        if (userdata != null)
+        {
+            _blurCache = userdata as RenderTexture;
+            transform.Find("BgImg").GetComponent<RawImage>().texture = _blurCache;
+        }
+        else
+        {
+            transform.Find("BgImg").GetComponent<RawImage>().color = new Color(1, 1, 1, 0.2f);
+        }
+
         (transform as RectTransform).Fade(0);
         (transform as RectTransform).Fade(1, 0.3f);
     }
@@ -200,7 +212,12 @@ public class UI_Setting : UIForm
     protected override void OnHide(object userdata = null)
     {
         base.OnHide(userdata);
-
+        if (_blurCache != null)
+        {
+            RenderTexture.ReleaseTemporary(_blurCache);
+            _blurCache = null;
+        }
+        transform.Find("BgImg").GetComponent<RawImage>().color = Color.white;
         (transform as RectTransform).Fade(0, 0.3f);
     }
 

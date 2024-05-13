@@ -312,6 +312,7 @@ GameObject:
   - component: {fileID: 2002155261}
   - component: {fileID: 2002155263}
   - component: {fileID: 2002155262}
+  - component: {fileID: 2002155264}
   m_Layer: 0
   m_Name: UICamera
   m_TagString: Untagged
@@ -385,3 +386,20 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &2002155264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002155260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e7c2420ea08174793ea08e78242552, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blur_mat: {fileID: 2100000, guid: 1e529e37e50cbd94d9b329476fe10c76, type: 2}
+  blur_iteration: 2
+  blur_spread: 1
+  blur_down_sample: 4
+  render_blur_screenShot: 0

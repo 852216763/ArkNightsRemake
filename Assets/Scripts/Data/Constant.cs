@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 public class Constant : MonoBehaviour
@@ -33,8 +35,63 @@ public class Constant : MonoBehaviour
 
 
     private const string SoundAssetPath_Voice = "Assets/Audio/Voice/";
-    public const string SoundAssetPath_Skadi2 = SoundAssetPath_Voice + "char_001_skadi2/";
-    public const string SoundAsset_Voice_Title = "CN_037.ogg";
+
+    public static string SoundAsset_CharVoice(int id, CharVoiceType type)
+    {
+        return $"{SoundAssetPath_Voice}{id}/CN_{(int)type:000}.ogg";
+    }
+
+    public enum CharVoiceType
+    {
+        /// <summary>
+        /// 闲置
+        /// </summary>
+        [Description("闲置")]
+        Idle = 10,
+        /// <summary>
+        /// 戳一下
+        /// </summary>
+        [Description("戳一下")]
+        Poke = 34,
+        /// <summary>
+        /// 标题
+        /// </summary>
+        [Description("标题")]
+        Title = 37,
+        /// <summary>
+        /// 问候
+        /// </summary>
+        [Description("问候")]
+        Greeting = 42,
+    }
+
+    public enum CharID
+    {
+        /// <summary>
+        /// 浊蒂
+        /// </summary>
+        skadi2 = 1,
+        /// <summary>
+        /// 风笛
+        /// </summary>
+        bpipe = 2,
+        /// <summary>
+        /// 星极
+        /// </summary>
+        astesi = 3,
+        /// <summary>
+        /// 砾
+        /// </summary>
+        gravel = 4,
+        /// <summary>
+        /// 卡缇
+        /// </summary>
+        cardigan = 5,
+        /// <summary>
+        /// 夜刀
+        /// </summary>
+        yato = 6,
+    }
     #endregion
 
     #region 音频组名

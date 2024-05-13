@@ -35,7 +35,7 @@ public class UI_Login : UIForm
         mainPanel?.gameObject.SetActive(false);
         StartCoroutine(Login());
 
-        FrameworkEntry.Sound.Play(Constant.SoundAssetPath_Skadi2 + Constant.SoundAsset_Voice_Title, Constant.SoundGroupName_CharacterVoice);
+        FrameworkEntry.Sound.Play(Constant.SoundAsset_CharVoice((int)Constant.CharID.skadi2, Constant.CharVoiceType.Title), Constant.SoundGroupName_CharacterVoice);
     }
 
     IEnumerator Login()

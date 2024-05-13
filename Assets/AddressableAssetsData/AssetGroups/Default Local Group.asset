@@ -45,6 +45,10 @@ MonoBehaviour:
     m_Address: mainMixer
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 239d0107daa87af4b90607bce40906d3
+    m_Address: Assets/Materials
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f966627bab6fc7e4d8bec8c90a4ca00e, type: 2}
   m_SchemaSet:

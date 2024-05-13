@@ -98,8 +98,6 @@ public class UI_Home : UIForm
     [Space]
     #endregion
 
-
-
     Transform staticPanel;
     Transform floatPanel;
     Transform floatUILeft;
@@ -114,7 +112,10 @@ public class UI_Home : UIForm
         staticPanel = transform.Find("StaticPanel");
         staticPanel.GetChild(0).Find("SettingBtn").GetComponent<Button>().onClick.AddListener(() =>
         {
-            FrameworkEntry.UI.ShowUI(Constant.UIAsset_Setting);
+            FrameworkEntry.UI.UICamera.GetComponent<UIBlurEffect>().EnableBlurRender(null, rt =>
+            {
+                FrameworkEntry.UI.ShowUI(Constant.UIAsset_Setting, rt);
+            });
         });
         floatPanel = transform.Find("FloatPanel");
         floatPanel.GetComponent<Canvas>().worldCamera = FrameworkEntry.UI.UICamera;
@@ -177,8 +178,8 @@ public class UI_Home : UIForm
 
         // 看板问候
         idleTimer = 0;
-        ShowVoiceDialog("问候     开屏问候文本");
-
+        ShowVoiceDialog("博士......来这里");
+        FrameworkEntry.Sound.Play(Constant.SoundAsset_CharVoice((int)Constant.CharID.skadi2, Constant.CharVoiceType.Greeting), Constant.SoundGroupName_CharacterVoice);
 
 
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
@@ -429,9 +430,8 @@ public class UI_Home : UIForm
                 };
         }
 
-        ShowVoiceDialog("想办法配置点语音文本");
-        // TODO 播放触摸语音
-
+        ShowVoiceDialog("......我为什么还戴着这顶帽子?");
+        FrameworkEntry.Sound.Play(Constant.SoundAsset_CharVoice((int)Constant.CharID.skadi2, Constant.CharVoiceType.Poke), Constant.SoundGroupName_CharacterVoice);
     }
 
     private IEnumerator AssistantSpecialAnim_CO()
