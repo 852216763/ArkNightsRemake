@@ -163,8 +163,9 @@ public class UI_CharInfo : UIForm
             _charSpriteImg[i] = _charSpriteScrollView.content.GetChild(i).GetComponent<Image>();
         }
         DragEventHandler handler = _charSpriteScrollView.transform.GetComponent<DragEventHandler>();
-        handler.onBeginDrag += OnCharSpriteBeginDrag;
-        handler.onEndDrag += OnCharSpriteEndDrag;
+        handler.onBeginDrag = OnCharSpriteBeginDrag;
+        handler.onDrag = OnCharSpriteDrag;
+        handler.onEndDrag = OnCharSpriteEndDrag;
 
         // Tween动画
         float duration = 0.3f;
@@ -200,6 +201,20 @@ public class UI_CharInfo : UIForm
         _panelHideSequence.Pause();
 
 
+    }
+
+    protected override void OnShow(object userdata = null)
+    {
+        base.OnShow(userdata);
+
+        (transform as RectTransform).Fade(0);
+        (transform as RectTransform).Fade(1, 0.3f);
+    }
+
+    protected override void OnHide(object userdata = null)
+    {
+        base.OnHide(userdata);
+        (transform as RectTransform).Fade(0.3f);
     }
 
     public void UpdateData(List<CharData> dataList, CharData currentData)
@@ -278,28 +293,26 @@ public class UI_CharInfo : UIForm
             LayoutRebuilder.ForceRebuildLayoutImmediate(_charTalentTMP[i].transform as RectTransform);
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(_talentItemGroup.transform as RectTransform);
+
         // 立绘
-        _charSpriteScrollView.horizontalNormalizedPosition = 0.5f;
-        _charSpriteImg[1].GetComponent<Image>().sprite = _dataList[CurrentDataIndex].Meta.CharSprites[0];
-        if (CurrentDataIndex > 0)
+        if (CurrentDataIndex <= 0)
+        {
+            _charSpriteImg[2].gameObject.SetActive(false);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_charSpriteScrollView.content);
+        }
+        else if (CurrentDataIndex >= _dataList.Count - 1)
+        {
+            _charSpriteImg[0].gameObject.SetActive(false);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_charSpriteScrollView.content);
+        }
+        else
         {
             _charSpriteImg[0].gameObject.SetActive(true);
             _charSpriteImg[0].sprite = _dataList[CurrentDataIndex - 1].Meta.CharSprites[0];
-        }
-        else
-        {
-            _charSpriteImg[0].gameObject.SetActive(false);
-            _charSpriteScrollView.horizontalNormalizedPosition = 0;
-        }
-        if (CurrentDataIndex < _dataList.Count - 1)
-        {
+            _charSpriteScrollView.horizontalNormalizedPosition = 0.5f;
+            _charSpriteImg[1].sprite = _dataList[CurrentDataIndex].Meta.CharSprites[0];
             _charSpriteImg[2].gameObject.SetActive(true);
-            _charSpriteImg[2].GetComponent<Image>().sprite = _dataList[CurrentDataIndex + 1].Meta.CharSprites[0];
-        }
-        else
-        {
-            _charSpriteImg[2].gameObject.SetActive(false);
-            _charSpriteScrollView.horizontalNormalizedPosition = 1;
+            _charSpriteImg[2].sprite = _dataList[CurrentDataIndex + 1].Meta.CharSprites[0];
         }
     }
 
@@ -344,8 +357,39 @@ public class UI_CharInfo : UIForm
         _horizonCache = _charSpriteScrollView.horizontalNormalizedPosition;
     }
 
+    private void OnCharSpriteDrag(PointerEventData eventData)
+    {
+        List<Image> activeChild = new List<Image>();
+        foreach (Image item in _charSpriteImg)
+        {
+            if (item.gameObject.activeSelf)
+            {
+                activeChild.Add(item);
+            }
+        }
+        if (activeChild.Count <= 1)
+        {
+            return;
+        }
+        float step = 1f / (activeChild.Count - 1);
+        for (int i = 0; i < activeChild.Count; i++)
+        {
+            // 当前拖拽的位置与第i个图的距离
+            float distance = Mathf.Abs(i * step - _charSpriteScrollView.horizontalNormalizedPosition);
+            // 移动20%的距离才开始淡出
+            float startFadeDistance = step * 0.2f;
+            distance = Mathf.Clamp01(distance - startFadeDistance);
+            float alpha = Mathf.Lerp(1, 0.3f, distance / step);
+            activeChild[i].color = new Color(1, 1, 1, alpha);
+        }
+    }
+
     private void OnCharSpriteEndDrag(PointerEventData eventData)
     {
+        foreach (Image item in _charSpriteImg)
+        {
+            item.color = Color.white;
+        }
         float moveDistance = _charSpriteScrollView.horizontalNormalizedPosition - _horizonCache;
         // 下一个角色Info
         if (moveDistance > flipSensitive)
