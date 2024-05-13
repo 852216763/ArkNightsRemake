@@ -14,6 +14,7 @@ public class Constant : MonoBehaviour
     public const string SettingPlayerPrefs_VoiceVolume = "VoiceVolume";
 
     #endregion
+
     #region 音频资源路径
     private const string SoundAssetPath_BGM = "Assets/Audio/Bgm/";
     public const string SoundAsset_sys_title_intro = SoundAssetPath_BGM + "sys_title_intro.ogg";
