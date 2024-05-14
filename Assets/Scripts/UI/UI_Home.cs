@@ -130,7 +130,8 @@ public class UI_Home : UIForm
         // 按钮事件注册
         Button characterBtn = floatUIRight.Find("CharacterBtn").GetComponent<Button>();
         characterBtn.onClick.AddListener(() => FrameworkEntry.UI.ShowUI(Constant.UIAsset_Character));
-
+        Button formationBtn = floatUIRight.Find("FormationBtn").GetComponent<Button>();
+        formationBtn.onClick.AddListener(() => FrameworkEntry.UI.ShowUI(Constant.UIAsset_Formation));
         // UI适配
         AdaptFloatUIScale();
         defaultFloatUILeftPosition = floatUILeft.localPosition;

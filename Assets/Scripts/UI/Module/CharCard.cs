@@ -59,7 +59,13 @@ public class CharCard : MonoBehaviour
     /// </summary>
     public bool IsSelected { get; set; }
 
+    /// <summary>
+    /// 被选中时的序号
+    /// </summary>
+    public int SelectedIndex { get; set; }
+
     public CharData Data { get => _data; }
+
 
 
     /// <summary>
@@ -68,6 +74,10 @@ public class CharCard : MonoBehaviour
     /// <param name="data"></param>
     public void UpdateCard(CharData data)
     {
+        if (data == null)
+        {
+            throw new System.Exception("更新角色卡时数据为空!");
+        }
         _data = data;
         CharMeta meta = _data.Meta;
         if (meta.Rarity < 1)
@@ -112,17 +122,18 @@ public class CharCard : MonoBehaviour
     public CharData SelectMulti(int index)
     {
         IsSelected = true;
-        TextMeshProUGUI tmp = SelectedFrame.GetComponentInChildren<TextMeshProUGUI>();
+        SelectedIndex = index;
+        TextMeshProUGUI tmp = SelectedFrame.GetComponentInChildren<TextMeshProUGUI>(true);
         tmp.text = index.ToString();
         tmp.gameObject.SetActive(true);
         SelectedFrame.SetActive(true);
-
         return _data;
     }
 
     public void CancelSelect()
     {
         IsSelected = false;
+        SelectedIndex = 0;
         SelectedFrame.SetActive(false);
     }
 

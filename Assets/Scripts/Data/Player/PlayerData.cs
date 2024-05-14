@@ -1,3 +1,4 @@
+using Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,7 @@ public class PlayerData
     int _jade;
     int _diamond;
     List<CharData> _ownCharDataList;
+    List<int> _formationList;
     // TODO 持有道具列表
 
     public static PlayerData Instance
@@ -164,6 +166,30 @@ public class PlayerData
         get
         {
             return _ownCharDataList;
+        }
+    }
+
+    /// <summary>
+    /// 编队 存储干员ID
+    /// </summary>
+    public List<int> FormationList
+    {
+        get
+        {
+            if (_formationList == null)
+            {
+                string formationJson = PlayerPrefs.GetString("FormationList");
+                List<int> list = JsonUtilityExtend.FromJson<int>(formationJson);
+                _formationList = list;
+            }
+            return _formationList;
+        }
+        set
+        {
+            _formationList = value;
+            string formationJson = JsonUtilityExtend.ToJson<int>(_formationList);
+            PlayerPrefs.SetString("FormationList", formationJson);
+            FrameworkEntry.Event.Fire(this, ReferencePool.Acquire<FormationListChangedEventData>());
         }
     }
 
