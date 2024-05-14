@@ -44,6 +44,7 @@ public class UI_Login : UIForm
         while (progress < 1)
         {
             progress += Time.deltaTime * 0.7f;
+            progress = Mathf.Clamp01(progress);
             // 卡60%加载是明日方舟的一环,不得不品尝
             if (Mathf.Abs(progress - 0.6f) < 0.05f && Ka60)
             {
