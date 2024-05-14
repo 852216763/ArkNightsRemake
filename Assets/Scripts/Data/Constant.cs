@@ -117,8 +117,12 @@ public class Constant : MonoBehaviour
     #endregion
 
     #region 通用UI动画参数
-    public const float FadeOutTime = 0.4f;
+    public const float FadeTime = 0.4f;
 
+    #endregion
+
+    #region 数据资源
+    public static string DataAsset_Char_Meta_DB = "Assets/GameData/char_meta_db.asset";
     #endregion
 
 }

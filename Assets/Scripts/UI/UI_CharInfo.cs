@@ -208,13 +208,12 @@ public class UI_CharInfo : UIForm
         base.OnShow(userdata);
 
         (transform as RectTransform).Fade(0);
-        (transform as RectTransform).Fade(1, 0.3f);
+        (transform as RectTransform).Fade(1, Constant.FadeTime);
     }
 
     protected override void OnHide(object userdata = null)
     {
         base.OnHide(userdata);
-        (transform as RectTransform).Fade(0.3f);
     }
 
     public void UpdateData(List<CharData> dataList, CharData currentData)

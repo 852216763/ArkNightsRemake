@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerData
 {
-    public static PlayerData _instance;
+    static PlayerData _instance;
 
     int _ap;
     int _userLevel;

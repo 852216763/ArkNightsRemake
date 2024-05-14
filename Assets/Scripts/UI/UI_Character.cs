@@ -15,24 +15,24 @@ using UnityEngine.UI;
 public class UI_Character : UIForm
 {
     [SerializeField]
-    CharCardScrollView cardContent;
-    [SerializeField]
     Color selectSortTMPColor;
 
-    TextMeshProUGUI currentSortSelectTMP;
-    Button sortByLevelBtn;
-    Button sortByRarityBtn;
+    CharCardScrollView _charCardSV;
+    TextMeshProUGUI _currentSortSelectTMP;
+    Button _sortByLevelBtn;
+    Button _sortByRarityBtn;
 
     protected override void OnInit(object userdata = null)
     {
         base.OnInit(userdata);
 
         transform.Find("BackBtn").GetComponent<Button>().onClick.AddListener(() => OnBackBtnClick());
-        sortByLevelBtn = transform.Find("SortByLevelBtn").GetComponent<Button>();
-        sortByLevelBtn.onClick.AddListener(() => SortCardByLevel());
-        sortByRarityBtn = transform.Find("SortByRarityBtn").GetComponent<Button>();
-        sortByRarityBtn.onClick.AddListener(() => SortCardByRarity());
-        currentSortSelectTMP = sortByLevelBtn.GetComponentInChildren<TextMeshProUGUI>();
+        _charCardSV = transform.Find("CharScrollView").GetComponent<CharCardScrollView>();
+        _sortByLevelBtn = transform.Find("SortByLevelBtn").GetComponent<Button>();
+        _sortByLevelBtn.onClick.AddListener(() => SortCardByLevel());
+        _sortByRarityBtn = transform.Find("SortByRarityBtn").GetComponent<Button>();
+        _sortByRarityBtn.onClick.AddListener(() => SortCardByRarity());
+        _currentSortSelectTMP = _sortByLevelBtn.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     protected override void OnShow(object userdata = null)
@@ -42,7 +42,7 @@ public class UI_Character : UIForm
 
         RectTransform rect = transform.GetComponent<RectTransform>();
         rect.Fade(0);
-        rect.Fade(1, 0.3f);
+        rect.Fade(1, Constant.FadeTime);
         SortCardByLevel();
     }
 
@@ -51,16 +51,16 @@ public class UI_Character : UIForm
     /// </summary>
     public void SortCardByRarity()
     {
-        currentSortSelectTMP.color = Color.white;
-        currentSortSelectTMP = sortByRarityBtn.GetComponentInChildren<TextMeshProUGUI>();
-        currentSortSelectTMP.color = selectSortTMPColor;
+        _currentSortSelectTMP.color = Color.white;
+        _currentSortSelectTMP = _sortByRarityBtn.GetComponentInChildren<TextMeshProUGUI>();
+        _currentSortSelectTMP.color = selectSortTMPColor;
 
         // 按照稀有度,精英阶段,等级降序排序
         List<CharData> data = PlayerData.Instance.OwnCharDataList.OrderByDescending(x => x.Meta.Rarity)
             .ThenByDescending(x => x.Elite)
             .ThenByDescending(x => x.CurrentLevel).ToList();
 
-        cardContent.RefreshScrollContent(data);
+        _charCardSV.RefreshScrollContent(data);
         RegisteCardBtnClickEvent();
     }
 
@@ -69,16 +69,16 @@ public class UI_Character : UIForm
     /// </summary>
     public void SortCardByLevel()
     {
-        currentSortSelectTMP.color = Color.white;
-        currentSortSelectTMP = sortByLevelBtn.GetComponentInChildren<TextMeshProUGUI>();
-        currentSortSelectTMP.color = selectSortTMPColor;
+        _currentSortSelectTMP.color = Color.white;
+        _currentSortSelectTMP = _sortByLevelBtn.GetComponentInChildren<TextMeshProUGUI>();
+        _currentSortSelectTMP.color = selectSortTMPColor;
 
         // 按照精英阶段,等级,稀有度降序排序
         List<CharData> data = PlayerData.Instance.OwnCharDataList.OrderByDescending(x => x.Elite)
             .ThenByDescending(x => x.CurrentLevel)
             .ThenByDescending(x => x.Meta.Rarity).ToList();
 
-        cardContent.RefreshScrollContent(data);
+        _charCardSV.RefreshScrollContent(data);
         RegisteCardBtnClickEvent();
     }
 
@@ -92,7 +92,7 @@ public class UI_Character : UIForm
 
     private void RegisteCardBtnClickEvent()
     {
-        List<CharCard> cardList = cardContent.charCardItemList;
+        List<CharCard> cardList = _charCardSV.charCardItemList;
         foreach (CharCard item in cardList)
         {
             Button btn = item.GetComponent<Button>();
@@ -100,7 +100,7 @@ public class UI_Character : UIForm
             btn.onClick.AddListener(() =>
             {
                 UI_CharInfo charInfo = FrameworkEntry.UI.ShowUI(Constant.UIAsset_CharInfo).GetComponent<UI_CharInfo>();
-                charInfo?.UpdateData(cardContent.charDataList, item.Data);
+                charInfo?.UpdateData(_charCardSV.showedCharDataList, item.Data);
             });
         }
     }

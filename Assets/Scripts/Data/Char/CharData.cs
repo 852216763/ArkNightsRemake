@@ -1,3 +1,4 @@
+using Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,8 +54,13 @@ public class CharData
         {
             if (meta == null)
             {
-                // TODO 添加角色数据库资源路径
-                CharMetaDB db = Addressables.LoadAssetAsync<CharMetaDB>("Assets/GameData/char_meta_db.asset").WaitForCompletion();
+                CharMetaDB db = FrameworkEntry.Resource.LoadAsset<CharMetaDB>(Constant.DataAsset_Char_Meta_DB);
+                CharMeta m = db.charMetas[CharID - 1];
+                if (m.CharID == charID)
+                {
+                    meta = m;
+                    return meta;
+                }
                 for (int i = 0; i < db.charIDs.Length; i++)
                 {
                     if (db.charIDs[i] == charID)

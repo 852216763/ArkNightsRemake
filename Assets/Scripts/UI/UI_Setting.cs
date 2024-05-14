@@ -206,7 +206,7 @@ public class UI_Setting : UIForm
         }
 
         (transform as RectTransform).Fade(0);
-        (transform as RectTransform).Fade(1, 0.3f);
+        (transform as RectTransform).Fade(1, Constant.FadeTime);
     }
 
     protected override void OnHide(object userdata = null)
@@ -218,7 +218,6 @@ public class UI_Setting : UIForm
             _blurCache = null;
         }
         transform.Find("BgImg").GetComponent<RawImage>().color = Color.white;
-        (transform as RectTransform).Fade(0, 0.3f);
     }
 
     /// <summary>
