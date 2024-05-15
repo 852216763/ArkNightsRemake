@@ -205,7 +205,6 @@ public class UI_CharInfo : UIForm
         _panelHideSequence.Join(rightPanelCanvasGroup.DOFade(0, duration));
         RectTransform rightRect = _rightPanel as RectTransform;
         _panelHideSequence.Join(rightRect.DOAnchorPosX(rightRect.anchoredPosition.x + offset, duration));
-        _panelHideSequence.onComplete += () => { Debug.Log(_leftPanel.transform.localPosition); };
 
     }
 
@@ -318,7 +317,6 @@ public class UI_CharInfo : UIForm
             _charSpriteImg[2].gameObject.SetActive(true);
             horizontalOffset -= 0.5f;
         }
-        Debug.Log(_charSpriteScrollView.horizontalNormalizedPosition);
         LayoutRebuilder.ForceRebuildLayoutImmediate(_charSpriteScrollView.content);
         _charSpriteScrollView.horizontalNormalizedPosition = horizontalOffset;
     }
@@ -329,7 +327,6 @@ public class UI_CharInfo : UIForm
         {
             _attrNarrowSequence.Complete();
         }
-        Debug.Log("bianzhai");
         isNarrowed = true;
         _attrNarrowSequence.PlayForward();
     }

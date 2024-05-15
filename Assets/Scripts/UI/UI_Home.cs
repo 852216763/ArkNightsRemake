@@ -54,7 +54,7 @@ public class UI_Home : UIForm
     readonly float resetDuration = 1f;
     readonly float floatUIBgMaxOffset = 20;
     readonly float xTriggerThreshold = 0.1f;
-    readonly float yTriggerThreshold = 0.05f;
+    readonly float yTriggerThreshold = 0.1f;
     readonly float defaultFloatUIAngle = 15;
     readonly float floatUIAngleMaxOffset = 5;
     readonly Vector3 floatUIPositionMaxOffset = new Vector3(30, 0);
@@ -94,7 +94,7 @@ public class UI_Home : UIForm
     readonly float assistantSpecialAnimInterval = 15f;
     WaitForSeconds assistantSpecialAnimYield;
     IEnumerator specialAnim_CO;
-
+    bool isInteracted = false;
     [Space]
     #endregion
 
@@ -133,7 +133,7 @@ public class UI_Home : UIForm
         Button formationBtn = floatUIRight.Find("FormationBtn").GetComponent<Button>();
         formationBtn.onClick.AddListener(() => FrameworkEntry.UI.ShowUI(Constant.UIAsset_Formation));
         // UI适配
-        AdaptFloatUIScale();
+        //AdaptFloatUIScale();
         defaultFloatUILeftPosition = floatUILeft.localPosition;
         defaultFloatUIRightPosition = floatUIRight.localPosition;
 
@@ -297,8 +297,9 @@ public class UI_Home : UIForm
 
         float accX = 0;
         float accY = 0;
-#if UNITY_ANDROID && false
-        accX = Input.gyro.userAcceleration.x;
+#if UNITY_ANDROID
+        Input.gyro.enabled = true;
+        accX = Input.gyro.userAcceleration.x * 1.5f;
         accY = Input.gyro.userAcceleration.y;
 #elif UNITY_STANDALONE_WIN || UNITY_EDITOR
         accX = (Input.mousePosition.x - lastMousePos.x) / CanvasScalerResolution.x / 2;
@@ -422,12 +423,19 @@ public class UI_Home : UIForm
 
     private void OnClickAssistant()
     {
+        if (isInteracted)
+        {
+            return;
+        }
+
+        isInteracted = true;
         if (assistantSpine != null)
         {
             assistantSpine.AnimationState.SetAnimation(0, "Interact", false)
                 .Complete += trackEntry =>
                 {
                     assistantSpine.AnimationState.SetAnimation(0, "Idle", true);
+                    isInteracted = false;
                 };
         }
 
