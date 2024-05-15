@@ -57,7 +57,7 @@ public class UI_CharInfo : UIForm
     TextMeshProUGUI[] _charTalentTMP;
 
     // 立绘
-    [Tooltip("翻页灵敏度"), Range(0.1f,1)]
+    [Tooltip("翻页灵敏度"), Range(0.1f, 1)]
     public float flipSensitive = 0.3f;
     public float flipDuration = 0.2f;
     ScrollRect _charSpriteScrollView;
@@ -171,35 +171,41 @@ public class UI_CharInfo : UIForm
         float duration = 0.3f;
         _attrNarrowSequence = DOTween.Sequence();
         _attrNarrowSequence.SetAutoKill(false);
-        _attrNarrowSequence.Join(maxHP.GetComponent<RectTransform>().DOSizeDelta(Vector2.one * 25, duration));
+        // 属性图标大小
+        Vector2 attrDeltaSize = Vector2.one * 25;
+        _attrNarrowSequence.Join(maxHP.GetComponent<RectTransform>().DOSizeDelta(attrDeltaSize, duration));
         _attrNarrowSequence.Join(maxHP.Find("AttrDesc").GetComponent<TextMeshProUGUI>().DOFade(0, duration));
-        _attrNarrowSequence.Join(attack.GetComponent<RectTransform>().DOSizeDelta(Vector2.one * 25, duration));
+        _attrNarrowSequence.Join(attack.GetComponent<RectTransform>().DOSizeDelta(attrDeltaSize, duration));
         _attrNarrowSequence.Join(attack.Find("AttrDesc").GetComponent<TextMeshProUGUI>().DOFade(0, duration));
-        _attrNarrowSequence.Join(defence.GetComponent<RectTransform>().DOSizeDelta(Vector2.one * 25, duration));
+        _attrNarrowSequence.Join(defence.GetComponent<RectTransform>().DOSizeDelta(attrDeltaSize, duration));
         _attrNarrowSequence.Join(defence.Find("AttrDesc").GetComponent<TextMeshProUGUI>().DOFade(0, duration));
-        _attrNarrowSequence.Join(magicResistance.GetComponent<RectTransform>().DOSizeDelta(Vector2.one * 25, duration));
+        _attrNarrowSequence.Join(magicResistance.GetComponent<RectTransform>().DOSizeDelta(attrDeltaSize, duration));
         _attrNarrowSequence.Join(magicResistance.Find("AttrDesc").GetComponent<TextMeshProUGUI>().DOFade(0, duration));
-        _attrNarrowSequence.Join(deployCD.GetComponent<RectTransform>().DOSizeDelta(Vector2.one * 25, duration));
+        _attrNarrowSequence.Join(deployCD.GetComponent<RectTransform>().DOSizeDelta(attrDeltaSize, duration));
         _attrNarrowSequence.Join(deployCD.Find("AttrDesc").GetComponent<TextMeshProUGUI>().DOFade(0, duration));
-        _attrNarrowSequence.Join(cost.GetComponent<RectTransform>().DOSizeDelta(Vector2.one * 25, duration));
+        _attrNarrowSequence.Join(cost.GetComponent<RectTransform>().DOSizeDelta(attrDeltaSize, duration));
         _attrNarrowSequence.Join(cost.Find("AttrDesc").GetComponent<TextMeshProUGUI>().DOFade(0, duration));
-        _attrNarrowSequence.Join(block.GetComponent<RectTransform>().DOSizeDelta(Vector2.one * 25, duration));
+        _attrNarrowSequence.Join(block.GetComponent<RectTransform>().DOSizeDelta(attrDeltaSize, duration));
         _attrNarrowSequence.Join(block.Find("AttrDesc").GetComponent<TextMeshProUGUI>().DOFade(0, duration));
-        _attrNarrowSequence.Join(attackSpeed.GetComponent<RectTransform>().DOSizeDelta(Vector2.one * 25, duration));
+        _attrNarrowSequence.Join(attackSpeed.GetComponent<RectTransform>().DOSizeDelta(attrDeltaSize, duration));
         _attrNarrowSequence.Join(attackSpeed.Find("AttrDesc").GetComponent<TextMeshProUGUI>().DOFade(0, duration));
         _attrNarrowSequence.Pause();
 
         duration = 0.6f;
+        // panel动画偏移量
+        float offset = 200;
         _panelHideSequence = DOTween.Sequence();
         _panelHideSequence.SetAutoKill(false);
+        _panelHideSequence.Pause();
         CanvasGroup leftPanelCanvasGroup = _leftPanel.GetOrAddComponent<CanvasGroup>();
         _panelHideSequence.Join(leftPanelCanvasGroup.DOFade(0, duration));
-        _panelHideSequence.Join(_leftPanel.DOLocalMoveX(_leftPanel.localPosition.x - 200, duration));
+        RectTransform leftRect = _leftPanel as RectTransform;
+        _panelHideSequence.Join(leftRect.DOAnchorPosX(leftRect.anchoredPosition.x - offset, duration));
         CanvasGroup rightPanelCanvasGroup = _rightPanel.GetOrAddComponent<CanvasGroup>();
         _panelHideSequence.Join(rightPanelCanvasGroup.DOFade(0, duration));
-        _panelHideSequence.Join(_rightPanel.DOLocalMoveX(_rightPanel.localPosition.x + 200, duration));
-        _panelHideSequence.Pause();
-
+        RectTransform rightRect = _rightPanel as RectTransform;
+        _panelHideSequence.Join(rightRect.DOAnchorPosX(rightRect.anchoredPosition.x + offset, duration));
+        _panelHideSequence.onComplete += () => { Debug.Log(_leftPanel.transform.localPosition); };
 
     }
 
@@ -294,25 +300,27 @@ public class UI_CharInfo : UIForm
         LayoutRebuilder.ForceRebuildLayoutImmediate(_talentItemGroup.transform as RectTransform);
 
         // 立绘
-        if (CurrentDataIndex <= 0)
+        _charSpriteImg[0].gameObject.SetActive(false);
+        _charSpriteImg[2].gameObject.SetActive(false);
+        _charSpriteImg[1].sprite = _dataList[CurrentDataIndex].Meta.CharSprites[0];
+        float horizontalOffset = 0.5f;
+        // 不在左边界则更新左侧的立绘
+        if (CurrentDataIndex > 0)
         {
-            _charSpriteImg[2].gameObject.SetActive(false);
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_charSpriteScrollView.content);
-        }
-        else if (CurrentDataIndex >= _dataList.Count - 1)
-        {
-            _charSpriteImg[0].gameObject.SetActive(false);
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_charSpriteScrollView.content);
-        }
-        else
-        {
-            _charSpriteImg[0].gameObject.SetActive(true);
             _charSpriteImg[0].sprite = _dataList[CurrentDataIndex - 1].Meta.CharSprites[0];
-            _charSpriteScrollView.horizontalNormalizedPosition = 0.5f;
-            _charSpriteImg[1].sprite = _dataList[CurrentDataIndex].Meta.CharSprites[0];
-            _charSpriteImg[2].gameObject.SetActive(true);
-            _charSpriteImg[2].sprite = _dataList[CurrentDataIndex + 1].Meta.CharSprites[0];
+            _charSpriteImg[0].gameObject.SetActive(true);
+            horizontalOffset += 0.5f;
         }
+        // 不在右边界则更新右侧的立绘
+        if (CurrentDataIndex < _dataList.Count - 1)
+        {
+            _charSpriteImg[2].sprite = _dataList[CurrentDataIndex + 1].Meta.CharSprites[0];
+            _charSpriteImg[2].gameObject.SetActive(true);
+            horizontalOffset -= 0.5f;
+        }
+        Debug.Log(_charSpriteScrollView.horizontalNormalizedPosition);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_charSpriteScrollView.content);
+        _charSpriteScrollView.horizontalNormalizedPosition = horizontalOffset;
     }
 
     private void NarrowAttrPanel()
@@ -321,8 +329,9 @@ public class UI_CharInfo : UIForm
         {
             _attrNarrowSequence.Complete();
         }
+        Debug.Log("bianzhai");
         isNarrowed = true;
-        _attrNarrowSequence.Play();
+        _attrNarrowSequence.PlayForward();
     }
 
     private void SwitchAttrPanelState()
@@ -349,11 +358,13 @@ public class UI_CharInfo : UIForm
             _panelHideSequence.Complete();
         }
         _panelHideSequence.PlayForward();
+
         if (flipTween != null)
         {
             flipTween.Complete();
         }
         _horizonCache = _charSpriteScrollView.horizontalNormalizedPosition;
+        _horizonCache = Mathf.Clamp01(_horizonCache);
     }
 
     private void OnCharSpriteDrag(PointerEventData eventData)
@@ -385,6 +396,12 @@ public class UI_CharInfo : UIForm
 
     private void OnCharSpriteEndDrag(PointerEventData eventData)
     {
+        if (_panelHideSequence.IsPlaying())
+        {
+            _panelHideSequence.Complete();
+        }
+        _panelHideSequence.PlayBackwards();
+
         foreach (Image item in _charSpriteImg)
         {
             item.color = Color.white;
@@ -396,7 +413,8 @@ public class UI_CharInfo : UIForm
             flipTween = DOTween.To(() => _charSpriteScrollView.horizontalNormalizedPosition,
                 x => _charSpriteScrollView.horizontalNormalizedPosition = x,
                 1, flipDuration);
-            flipTween.onComplete = () => { CurrentDataIndex++; RefreshInfo(); };
+            CurrentDataIndex = (_dataList.Count + CurrentDataIndex + 1) % _dataList.Count;
+            flipTween.onComplete = () => { RefreshInfo(); };
         }
         // 上一个角色Info
         else if (moveDistance < -flipSensitive)
@@ -404,17 +422,18 @@ public class UI_CharInfo : UIForm
             flipTween = DOTween.To(() => _charSpriteScrollView.horizontalNormalizedPosition,
                 x => _charSpriteScrollView.horizontalNormalizedPosition = x,
                 0, flipDuration);
-            flipTween.onComplete = () => { CurrentDataIndex--; RefreshInfo(); };
+            CurrentDataIndex = (_dataList.Count + CurrentDataIndex - 1) % _dataList.Count;
+            flipTween.onComplete = () => { RefreshInfo(); };
         }
         // 滚回当前角色Info
         else
         {
             float pos = 0.5f;
-            if (_currentDataIndex <= 0)
+            if (CurrentDataIndex <= 0)
             {
                 pos = 0;
             }
-            else if (_currentDataIndex >= _dataList.Count - 1)
+            else if (CurrentDataIndex >= _dataList.Count - 1)
             {
                 pos = 1;
             }
@@ -422,12 +441,5 @@ public class UI_CharInfo : UIForm
                 x => _charSpriteScrollView.horizontalNormalizedPosition = x,
                 pos, flipDuration);
         }
-
-        if (_panelHideSequence.IsPlaying())
-        {
-            _panelHideSequence.Complete();
-        }
-        _panelHideSequence.PlayBackwards();
-
     }
 }
