@@ -137,7 +137,7 @@ public class CharMeta
 
     /// <summary>
     /// 攻击范围
-    /// 这里假设角色朝上, (0,0)就代表攻击范围包含当前格,(-1,0)就代表包含当前格左1格
+    /// 这里假设角色朝右, (0,0)就代表攻击范围包含当前格,(-1,0)就代表包含当前格左1格
     /// </summary>
     public Vector2[] AtkRange { get => atkRange; set => atkRange = value; }
 

@@ -3,32 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class JsonUtilityExtend
+namespace Framework
 {
-    public static string ToJson<T>(List<T> list)
+    public static class JsonUtilityExtend
     {
-        if (list == null)
+        public static string ToJson<T>(List<T> list)
         {
-            return "";
+            if (list == null)
+            {
+                return "";
+            }
+            Pack<T> pack = new Pack<T>();
+            pack.data = list.ToArray();
+            return JsonUtility.ToJson(pack);
         }
-        Pack<T> pack = new Pack<T>();
-        pack.data = list.ToArray();
-        return JsonUtility.ToJson(pack);
-    }
 
-    public static List<T> FromJson<T>(string json)
-    {
-        Pack<T> pack = JsonUtility.FromJson<Pack<T>>(json);
-        if (pack == null)
+        public static List<T> FromJson<T>(string json)
         {
-            return new List<T>();
+            Pack<T> pack = JsonUtility.FromJson<Pack<T>>(json);
+            if (pack == null)
+            {
+                return new List<T>();
+            }
+            return new List<T>(pack.data);
         }
-        return new List<T>(pack.data);
-    }
 
-    [Serializable]
-    class Pack<T>
-    {
-        public T[] data;
+        [Serializable]
+        class Pack<T>
+        {
+            public T[] data;
+        }
     }
 }

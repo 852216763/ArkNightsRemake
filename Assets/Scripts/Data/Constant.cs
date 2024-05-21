@@ -103,7 +103,10 @@ public class Constant : MonoBehaviour
     #endregion
 
     #region 图片资源路径
-
+    public static string SpriteAsset_ItemBg(int rare)
+    {
+        return $"Assets/Arts/UI/Item/bg_rare_{rare}.png";
+    }
     #endregion
 
     #region UI资源路径
@@ -116,6 +119,9 @@ public class Constant : MonoBehaviour
     public const string UIAsset_Setting = UIAssetPath + "UI_setting.prefab";
     public const string UIAsset_Formation = UIAssetPath + "UI_formation.prefab";
     public const string UIAsset_CharSelect = UIAssetPath + "UI_charSelect.prefab";
+    public const string UIAsset_Storage = UIAssetPath + "UI_storage.prefab";
+    public const string UIAsset_ItemCard = UIAssetPath + "UIModule/Item_cardItem.prefab";
+    public const string UIAsset_ItemDetail = UIAssetPath + "UI_itemDetail.prefab";
     #endregion
 
     #region 通用UI动画参数
@@ -125,6 +131,18 @@ public class Constant : MonoBehaviour
 
     #region 数据资源
     public static string DataAsset_Char_Meta_DB = "Assets/GameData/char_meta_db.asset";
+    public static string DataAsset_Item_Meta_DB = "Assets/GameData/item_meta_db.asset";
     #endregion
 
+    #region 物品ID
+    public class ItemID
+    {
+        public static int ItemID_Diamond = 0;
+        public static int ItemID_Jade = 1;
+        public static int ItemID_Money = 2;
+
+    }
+
+
+    #endregion
 }

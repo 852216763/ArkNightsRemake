@@ -55,10 +55,11 @@ namespace Framework
         /// 加载游戏对象实例
         /// </summary>
         /// <param name="assetPath">对象资源路径</param>
+        /// <param name="parent">父物体</param>
         /// <returns>创建的实例</returns>
-        public GameObject LoadGameObject(string assetPath)
+        public GameObject LoadGameObject(string assetPath, Transform parent = null)
         {
-            AsyncOperationHandle<GameObject> handler = Addressables.InstantiateAsync(assetPath);
+            AsyncOperationHandle<GameObject> handler = Addressables.InstantiateAsync(assetPath, parent);
             GameObject result = handler.WaitForCompletion();
             if (result == null)
             {
@@ -124,7 +125,7 @@ namespace Framework
         /// </summary>
         /// <typeparam name="T">要释放的资源类型</typeparam>
         /// <param name="asset">要释放的资源</param>
-        public void ReleaseAsset<T>(T asset)
+        public void ReleaseAsset<T>(T asset) where T : class
         {
             if (asset == null)
             {
@@ -140,7 +141,7 @@ namespace Framework
         /// </summary>
         /// <typeparam name="T">要释放的资源类型</typeparam>
         /// <param name="assets">要释放的资源列表</param>
-        public void  ReleaseAssets<T>(List<T> assets)
+        public void ReleaseAssets<T>(List<T> assets) where T : class
         {
             foreach (T item in assets)
             {

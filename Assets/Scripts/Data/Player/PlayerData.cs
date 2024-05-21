@@ -12,12 +12,9 @@ public class PlayerData
     int _userLevel;
     string _userName;
     int _userID;
-    int _money;
-    int _jade;
-    int _diamond;
     List<CharData> _ownCharDataList;
     List<int> _formationList;
-    // TODO 持有道具列表
+    List<ItemData> _ownItemDataList;
 
     public static PlayerData Instance
     {
@@ -117,12 +114,12 @@ public class PlayerData
     {
         get
         {
-            return _money;
+            return OwnItemDataList[Constant.ItemID.ItemID_Money].Count;
         }
         set
         {
-            _money = value;
-            PlayerPrefs.SetInt("Money", _money);
+            OwnItemDataList[Constant.ItemID.ItemID_Money].Count = value;
+            OwnItemDataList = OwnItemDataList;
         }
     }
 
@@ -133,12 +130,12 @@ public class PlayerData
     {
         get
         {
-            return _jade;
+            return OwnItemDataList[Constant.ItemID.ItemID_Jade].Count;
         }
         set
         {
-            _jade = value;
-            PlayerPrefs.SetInt("Jade", _jade);
+            OwnItemDataList[Constant.ItemID.ItemID_Jade].Count = value;
+            OwnItemDataList = OwnItemDataList;
         }
     }
 
@@ -149,12 +146,12 @@ public class PlayerData
     {
         get
         {
-            return _diamond;
+            return OwnItemDataList[Constant.ItemID.ItemID_Diamond].Count;
         }
         set
         {
-            _diamond = value;
-            PlayerPrefs.SetInt("Diamond", _diamond);
+            OwnItemDataList[Constant.ItemID.ItemID_Diamond].Count = value;
+            OwnItemDataList = OwnItemDataList;
         }
     }
 
@@ -165,7 +162,19 @@ public class PlayerData
     {
         get
         {
+            if (_ownCharDataList == null)
+            {
+                string ownCharDataJson = PlayerPrefs.GetString("OwnCharData");
+                List<CharData> list = JsonUtilityExtend.FromJson<CharData>(ownCharDataJson);
+                _ownCharDataList = list;
+            }
             return _ownCharDataList;
+        }
+        set
+        {
+            _ownCharDataList = value;
+            string ownCharDataJson = JsonUtilityExtend.ToJson<CharData>(_ownCharDataList);
+            PlayerPrefs.SetString("OwnCharData", ownCharDataJson);
         }
     }
 
@@ -193,6 +202,29 @@ public class PlayerData
         }
     }
 
+    /// <summary>
+    /// 持有物品列表
+    /// </summary>
+    public List<ItemData> OwnItemDataList
+    {
+        get
+        {
+            if (_ownItemDataList == null)
+            {
+                string ownCharDataJson = PlayerPrefs.GetString("OwnItemData");
+                List<ItemData> list = JsonUtilityExtend.FromJson<ItemData>(ownCharDataJson);
+                _ownItemDataList = list;
+            }
+            return _ownItemDataList;
+        }
+        set
+        {
+            _ownItemDataList = value;
+            string ownCharDataJson = JsonUtilityExtend.ToJson<ItemData>(_ownItemDataList);
+            PlayerPrefs.SetString("OwnItemData", ownCharDataJson);
+        }
+    }
+
 
     /// <summary>
     /// 初始化数据
@@ -204,71 +236,95 @@ public class PlayerData
         _userName = PlayerPrefs.GetString("UserName", "Doc");
         _userID = PlayerPrefs.GetInt("UserID", 114514);
 
-        _money = PlayerPrefs.GetInt("Money", 11451419);
-        _jade = PlayerPrefs.GetInt("Jade", 198);
-        _diamond = PlayerPrefs.GetInt("Diamond", 10);
-
-        string ownCharDataListJson = PlayerPrefs.GetString("OwnCharData", "");
-        _ownCharDataList = JsonUtilityExtend.FromJson<CharData>(ownCharDataListJson);
-        if (_ownCharDataList.Count <= 0)
+        // 设置默认持有的角色数据
+        if (OwnCharDataList.Count <= 0)
         {
             SetDefaultCharData();
         }
-    }
-
-    public void SaveCharDataChange()
-    {
-        PlayerPrefs.SetString("OwnCharData", JsonUtilityExtend.ToJson<CharData>(_ownCharDataList));
+        // 设置默认持有的物品数据
+        if (OwnItemDataList.Count <= 0)
+        {
+            SetDefaultItemData();
+        }
     }
 
     #region 测试用
 
     void SetDefaultCharData()
     {
-        _ownCharDataList = new List<CharData>();
+        List<CharData> charDataList = new List<CharData>();
         CharData d = new CharData();
         d.CharID = 1;
         d.CurrentExp = 500;
         d.CurrentLevel = 20;
         d.Elite = CharEliteLevel.one;
-        _ownCharDataList.Add(d);
+        charDataList.Add(d);
 
         d = new CharData();
         d.CharID = 2;
         d.CurrentExp = 200;
         d.CurrentLevel = 15;
         d.Elite = CharEliteLevel.two;
-        _ownCharDataList.Add(d);
+        charDataList.Add(d);
 
         d = new CharData();
         d.CharID = 3;
         d.CurrentExp = 50;
         d.CurrentLevel = 40;
         d.Elite = CharEliteLevel.one;
-        _ownCharDataList.Add(d);
+        charDataList.Add(d);
 
         d = new CharData();
         d.CharID = 4;
         d.CurrentExp = 37;
         d.CurrentLevel = 35;
         d.Elite = CharEliteLevel.one;
-        _ownCharDataList.Add(d);
+        charDataList.Add(d);
 
         d = new CharData();
         d.CharID = 5;
         d.CurrentExp = 150;
         d.CurrentLevel = 20;
         d.Elite = CharEliteLevel.zero;
-        _ownCharDataList.Add(d);
+        charDataList.Add(d);
 
         d = new CharData();
         d.CharID = 6;
         d.CurrentExp = 150;
         d.CurrentLevel = 20;
         d.Elite = CharEliteLevel.zero;
-        _ownCharDataList.Add(d);
+        charDataList.Add(d);
 
-        SaveCharDataChange();
+        _ownCharDataList = charDataList;
+    }
+
+    void SetDefaultItemData()
+    {
+        List<ItemData> itemDataList = new List<ItemData>();
+        ItemData item = new ItemData();
+        item.ItemID = Constant.ItemID.ItemID_Diamond;
+        item.Count = 21;
+        itemDataList.Add(item);
+
+        item = new ItemData();
+        item.ItemID = Constant.ItemID.ItemID_Jade;
+        item.Count = 6543;
+        itemDataList.Add(item);
+
+        item = new ItemData();
+        item.ItemID = Constant.ItemID.ItemID_Money;
+        item.Count = 1234567;
+        itemDataList.Add(item);
+
+        for (int i = 3; i < 21; i++)
+        {
+            item = new ItemData();
+            item.ItemID = i;
+            item.Count = Random.Range(1,20000);
+            itemDataList.Add(item);
+        }
+
+        _ownItemDataList = itemDataList;
     }
 
     #endregion

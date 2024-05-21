@@ -110,28 +110,23 @@ public class UI_Home : UIForm
     {
         base.OnInit(userdata);
         staticPanel = transform.Find("StaticPanel");
-        staticPanel.GetChild(0).Find("SettingBtn").GetComponent<Button>().onClick.AddListener(() =>
-        {
-            FrameworkEntry.UI.UICamera.GetComponent<UIBlurEffect>().EnableBlurRender(null, rt =>
-            {
-                FrameworkEntry.UI.ShowUI(Constant.UIAsset_Setting, rt);
-            });
-        });
         floatPanel = transform.Find("FloatPanel");
-        floatPanel.GetComponent<Canvas>().worldCamera = FrameworkEntry.UI.UICamera;
         floatUILeft = floatPanel.Find("LeftPanel");
         floatUIRight = floatPanel.Find("RightPanel");
         environmentPanel = transform.Find("EnvironmentPanel");
-        environmentPanel.GetComponent<Canvas>().worldCamera = FrameworkEntry.UI.UICamera;
         background = environmentPanel.Find("Bg");
         assistant = environmentPanel.Find("Assistant");
         assistantSpine = assistant.GetComponent<SkeletonGraphic>();
 
         // 按钮事件注册
+        Button settingBtn = staticPanel.GetChild(0).Find("SettingBtn").GetComponent<Button>();
+        settingBtn.onClick.AddListener(() => FrameworkEntry.UI.ShowUI(Constant.UIAsset_Setting));
         Button characterBtn = floatUIRight.Find("CharacterBtn").GetComponent<Button>();
         characterBtn.onClick.AddListener(() => FrameworkEntry.UI.ShowUI(Constant.UIAsset_Character));
         Button formationBtn = floatUIRight.Find("FormationBtn").GetComponent<Button>();
         formationBtn.onClick.AddListener(() => FrameworkEntry.UI.ShowUI(Constant.UIAsset_Formation));
+        Button storageBtn = floatUIRight.Find("StorageBtn").GetComponent<Button>();
+        storageBtn.onClick.AddListener(() => FrameworkEntry.UI.ShowUI(Constant.UIAsset_Storage));
         // UI适配
         //AdaptFloatUIScale();
         defaultFloatUILeftPosition = floatUILeft.localPosition;

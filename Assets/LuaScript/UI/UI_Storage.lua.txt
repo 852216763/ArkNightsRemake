@@ -1,0 +1,175 @@
+-- 过滤器选中颜色
+local _selectFilterTMPColor = Color(2/255,163/255,237/255,1);
+-- 过滤器按钮
+local _allBtn, _baseBtn, _cultivateBtn;
+-- 当前启用的过滤器按钮
+local _currentFilterBtn;
+-- 物品滚动框
+local _itemSR;
+-- 物品对象预制体
+local _itemPrefab;
+-- 物品对象背景
+local _itemBgImgTable;
+-- 返回按钮
+local _backBtn;
+
+local function ListToTable(list)
+    local tbl = {};
+    for i = 0, list.Count - 1 do
+        table.insert(tbl, list[i]);
+    end
+    return tbl;
+end
+
+-- 按 排序顺序,稀有度,物品ID 的顺序排序
+local function SortItemTable(tbl)
+    table.sort(tbl ,function(v1, v2)
+        local v1Meta,v2Meta = v1.Meta, v2.Meta;
+        if(v1Meta.SortOrder ~= v2Meta.SortOrder) then
+            return v1Meta.SortOrder < v2Meta.SortOrder;
+        end
+
+        if(v1Meta.Rarity ~= v2Meta.Rarity) then
+            return v1Meta.Rarity > v2Meta.Rarity;
+        end
+
+        if(v1Meta.ItemID ~= v2Meta.ItemID) then
+            return v1Meta.ItemID < v2Meta.ItemID;
+        end
+        return false;
+    end);
+end
+
+-- 更新物品滚动框内容
+local function RefreshItemSR(itemTable)
+    local content = _itemSR.content;
+    local difference = #itemTable - content.childCount;
+    if difference > 0 then
+        for i = 1, difference do
+            GameObject.Instantiate(_itemPrefab, content);
+        end
+    end
+
+    for i = 0, content.childCount - 1 do
+        -- 需要更新的物品对象
+        if(i < #itemTable) then
+            local itemData = itemTable[i + 1];
+            local itemTransform = content:GetChild(i);
+            itemTransform.gameObject:SetActive(true);
+            itemTransform:GetComponent("Image").sprite = _itemBgImgTable[itemData.Meta.Rarity];
+            itemTransform:GetComponentInChildren(typeof(CS.TMPro.TextMeshProUGUI)).text = itemData.FormattedCount;
+            itemTransform:Find("Icon"):GetComponent("Image").sprite = itemData.Meta.Icon;
+            local btn = itemTransform:GetComponent("Button");
+            btn.onClick:RemoveAllListeners();
+            btn.onClick:AddListener(function()
+                FrameworkEntry.UI:ShowUI(CS.Constant.UIAsset_ItemDetail, itemData);
+            end);
+        -- 多余对象,隐藏
+        else
+            content:GetChild(i).gameObject:SetActive(false);
+        end
+    end
+end
+
+-- 退出仓库界面
+local function OnBackBtnClick()
+    FrameworkEntry.UI:HideUI(self.gameObject);
+end
+
+-- 显示全部类型物品
+local function FilterAll()
+    if(_currentFilterBtn ~= nil) then
+        _currentFilterBtn.targetGraphic.color = Color.white;
+        _currentFilterBtn = _allBtn;
+        _allBtn.targetGraphic.color = _selectFilterTMPColor;
+    end
+
+    local allItemTable = ListToTable(CS.PlayerData.Instance.OwnItemDataList);
+    SortItemTable(allItemTable);
+    RefreshItemSR(allItemTable);
+end
+
+-- 显示基础类型物品
+local function FilterBase()
+    if(_currentFilterBtn ~= nil) then
+        _currentFilterBtn.targetGraphic.color = Color.white;
+        _currentFilterBtn = _baseBtn;
+        _baseBtn.targetGraphic.color = _selectFilterTMPColor;
+    end
+
+    local allItemTable = ListToTable(CS.PlayerData.Instance.OwnItemDataList);
+    local eligibleItemTable = {};
+    for k,v in ipairs(allItemTable) do
+        if(v.Meta.ItemType == CS.ItemEnum.JI_CHU) then
+            table.insert(eligibleItemTable, v);
+        end
+    end
+    SortItemTable(eligibleItemTable);
+    RefreshItemSR(eligibleItemTable);
+end
+
+-- 显示养成类型物品
+local function FilterCultivate()
+    if(_currentFilterBtn ~= nil) then
+        _currentFilterBtn.targetGraphic.color = Color.white;
+        _currentFilterBtn = _cultivateBtn;
+        _cultivateBtn.targetGraphic.color = _selectFilterTMPColor;
+    end
+
+    local allItemTable = ListToTable(CS.PlayerData.Instance.OwnItemDataList);
+    local eligibleItemTable = {};
+    for k,v in ipairs(allItemTable) do
+        if(v.Meta.ItemType == CS.ItemEnum.YANG_CHENG) then
+            table.insert(eligibleItemTable, v);
+        end
+    end
+    SortItemTable(eligibleItemTable);
+    RefreshItemSR(eligibleItemTable);
+end
+
+--- 生命周期函数
+function OnInit(userdata)
+
+
+    _allBtn =  self.transform:Find("FilterAllBtn"):GetComponent("Button");
+    _allBtn.onClick:AddListener(FilterAll);
+    _baseBtn =  self.transform:Find("FilterBaseBtn"):GetComponent("Button");
+    _baseBtn.onClick:AddListener(FilterBase);
+    _cultivateBtn =  self.transform:Find("FilterCultivateBtn"):GetComponent("Button");
+    _cultivateBtn.onClick:AddListener(FilterCultivate);
+
+    _backBtn = self.transform:Find("BackBtn"):GetComponent("Button");
+    _backBtn.onClick:AddListener(OnBackBtnClick);
+
+    _itemSR = self.transform:Find("Item_scrollView"):GetComponent("ScrollRect");
+
+    local loadAsset = xlua.get_generic_method(CS.Framework.ResourceManager, "LoadAsset");
+    local loadAsset_GameObject = loadAsset(GameObject);
+    local loadAsset_Sprite = loadAsset(CS.UnityEngine.Sprite);
+    _itemPrefab = loadAsset_GameObject(FrameworkEntry.Resource, CS.Constant.UIAsset_ItemCard);
+    _itemBgImgTable = {};
+    for i = 1, 6 do
+        local img = loadAsset_Sprite(FrameworkEntry.Resource, CS.Constant.SpriteAsset_ItemBg(i));
+        table.insert(_itemBgImgTable, img);
+    end
+end
+
+function OnShow(userdata)
+    local rect = self.transform:GetComponent("RectTransform");
+    rect:Fade(0);
+    rect:Fade(1, CS.Constant.FadeTime);
+
+    _currentFilterBtn = _allBtn;
+    FilterAll();
+end
+
+function OnClose(userdata)
+    -- 释放加载的资源
+    FrameworkEntry.Resource:ReleaseAsset(_itemPrefab);
+    _itemPrefab = nil;
+    for k,v in ipairs(_itemBgImgTable) do
+        FrameworkEntry.Resource:ReleaseAsset(v);
+    end
+    _itemBgImgTable = nil;
+end
+--- END 生命周期函数

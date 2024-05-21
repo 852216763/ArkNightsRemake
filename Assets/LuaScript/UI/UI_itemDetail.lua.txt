@@ -1,0 +1,76 @@
+-- 背景图
+local _rawImg;
+-- 高斯模糊生成脚本
+local _blurScript;
+-- 返回按钮
+local _backBtn;
+-- 物品Icon
+local _itemIcon;
+-- 物品名称
+local _itemNameTMP;
+-- 物品数量
+local _itemCountTMP;
+-- 物品描述
+local _itemDescTMP;
+
+local function ListToTable(list)
+    local tbl = {};
+    for i = 0, list.Count - 1 do
+        table.insert(tbl, list[i]);
+    end
+    return tbl;
+end
+
+-- 关闭物品详情界面
+local function CloseUI()
+    FrameworkEntry.UI:HideUI(self.gameObject);
+end
+
+--- 生命周期函数
+function OnInit(userdata)
+    _rawImg = self.transform:Find("BgRawImg"):GetComponent("RawImage");
+    _blurScript = FrameworkEntry.UI.UICamera:GetComponent("UIBlurEffect");
+
+    _backBtn = _rawImg.transform:GetComponent("Button");
+    _backBtn.onClick:AddListener(CloseUI);
+
+    local mainPanel = self.transform:Find("MainPanel");
+    _itemIcon = mainPanel:Find("Icon"):GetComponent("Image");
+    _itemNameTMP = mainPanel:Find("Name"):GetChild(0):GetComponent("TextMeshProUGUI");
+    _itemCountTMP = mainPanel:Find("Count"):GetChild(0):GetComponent("TextMeshProUGUI");
+    _itemDescTMP = mainPanel:Find("DescScrollView"):GetComponentInChildren(typeof(CS.TMPro.TextMeshProUGUI));
+end
+function OnShow(userdata)
+    _rawImg.color = Color(1, 1, 1, 0.2);
+    _blurScript:EnableBlurRender(nil, function(rt)
+        _rawImg.color = Color.white;
+        _blurCache = rt;
+        _rawImg.texture = _blurCache;
+    end);
+
+    local rect = self.transform:GetComponent("RectTransform");
+    rect:Fade(0);
+    rect:Fade(1, CS.Constant.FadeTime);
+
+    -- 填充物品详情数据
+    if(userdata ~= nil) then
+        local itemData = userdata;
+        local itemMeta = itemData.Meta;
+        _itemIcon.sprite = itemMeta.Icon;
+        _itemNameTMP.text = itemMeta.Name;
+        _itemCountTMP.text = itemData.Count;
+        local params = {itemMeta.Purpose, itemMeta.Description, itemMeta.ObtainWay};
+        _itemDescTMP.text = string.format("%s\n\n<i>%s</i>\n\n<color=#bbbbbb>获得方式</color>\n\n%s",table.unpack(params));
+    end
+end
+
+function OnHide(userdata)
+    -- 释放RenderTexture
+    if (_blurCache ~= nil) then
+        _rawImg.texture = nil;
+        CS.UnityEngine.RenderTexture:ReleaseTemporary(_blurCache);
+        _blurCache = nil;
+    end
+    _rawImg.color = Color.white;
+end
+--- END 生命周期函数

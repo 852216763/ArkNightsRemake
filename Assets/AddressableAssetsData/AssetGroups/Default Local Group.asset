@@ -49,6 +49,10 @@ MonoBehaviour:
     m_Address: Assets/Materials
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 9cc521ca80404244384e7389db67cbbe
+    m_Address: Assets/LuaScript
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f966627bab6fc7e4d8bec8c90a4ca00e, type: 2}
   m_SchemaSet:

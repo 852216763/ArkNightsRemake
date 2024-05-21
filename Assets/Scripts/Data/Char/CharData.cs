@@ -59,16 +59,19 @@ public class CharData
                 if (m.CharID == charID)
                 {
                     meta = m;
-                    return meta;
                 }
-                for (int i = 0; i < db.charIDs.Length; i++)
+                else
                 {
-                    if (db.charIDs[i] == charID)
+                    for (int i = 0; i < db.charMetas.Length; i++)
                     {
-                        meta = db.charMetas[i];
-                        break;
+                        if (db.charMetas[i].CharID == charID)
+                        {
+                            meta = db.charMetas[i];
+                            break;
+                        }
                     }
                 }
+                FrameworkEntry.Resource.ReleaseAsset<CharMetaDB>(db);
             }
             return meta;
         }

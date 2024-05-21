@@ -2,20 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class TransformExtensions
+namespace Framework
 {
-    /// <summary>
-    /// 获取指定类型的组件,若不存在则添加
-    /// </summary>
-    /// <typeparam name="T">要获取的组件类型</typeparam>
-    /// <returns>获取到的组件</returns>
-    public static T GetOrAddComponent<T>(this Transform transform) where T : Component
+    public static class TransformExtensions
     {
-        transform.TryGetComponent<T>(out T component);
-        if (component == null)
+        /// <summary>
+        /// 获取指定类型的组件,若不存在则添加
+        /// </summary>
+        /// <typeparam name="T">要获取的组件类型</typeparam>
+        /// <returns>获取到的组件</returns>
+        public static T GetOrAddComponent<T>(this Transform transform) where T : Component
         {
-            component = transform.gameObject.AddComponent<T>();
+            transform.TryGetComponent<T>(out T component);
+            if (component == null)
+            {
+                component = transform.gameObject.AddComponent<T>();
+            }
+            return component;
         }
-        return component;
     }
 }

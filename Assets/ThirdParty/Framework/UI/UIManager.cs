@@ -129,7 +129,7 @@ namespace Framework
             }
             else
             {
-                uiObj = _resource.LoadGameObject(uiAssetPath);
+                uiObj = _resource.LoadGameObject(uiAssetPath, _uiRoot);
                 if (uiObj == null)
                 {
                     Debugger.LogError($"加载UI资源 {uiAssetPath} 失败");
@@ -137,7 +137,6 @@ namespace Framework
                 }
 
                 _uiMap.Add(uiAssetPath, uiObj);
-                uiObj.transform.SetParent(_uiRoot.transform);
 
                 uiObj.transform.TryGetComponent<UIForm>(out uiLogic);
                 if (uiLogic != null)

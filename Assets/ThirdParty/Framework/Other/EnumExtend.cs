@@ -5,21 +5,24 @@ using System.ComponentModel;
 using System.Reflection;
 using UnityEngine;
 
-public static class EnumExtend
+namespace Framework
 {
-    public static string GetDescription(this Enum value)
+    public static class EnumExtend
     {
-        FieldInfo fieldInfo = value.GetType().GetField(value.ToString());
-        DescriptionAttribute[] attributes = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        public static string GetDescription(this Enum value)
+        {
+            FieldInfo fieldInfo = value.GetType().GetField(value.ToString());
+            DescriptionAttribute[] attributes = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-        if (attributes.Length > 0)
-        {
-            return attributes[0].Description;
+            if (attributes.Length > 0)
+            {
+                return attributes[0].Description;
+            }
+            else
+            {
+                return value.ToString();
+            }
         }
-        else
-        {
-            return value.ToString();
-        }
+
     }
-
 }

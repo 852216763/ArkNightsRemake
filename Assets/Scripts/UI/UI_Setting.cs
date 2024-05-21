@@ -36,12 +36,14 @@ public class UI_Setting : UIForm
     Scrollbar voiceScrollBar;
 
     RenderTexture _blurCache;
+    RawImage _bgImg;
 
     protected override void OnInit(object userdata = null)
     {
         base.OnInit(userdata);
 
         transform.Find("BackBtn").GetComponent<Button>().onClick.AddListener(() => OnBackBtnClick());
+        _bgImg = transform.Find("BgImg").GetComponent<RawImage>();
 
         Transform mainPanel = transform.Find("MainPanel");
         Transform tabs = mainPanel.Find("Tabs");
@@ -194,16 +196,13 @@ public class UI_Setting : UIForm
     protected override void OnShow(object userdata = null)
     {
         base.OnShow(userdata);
-
-        if (userdata != null)
+        _bgImg.color = new Color(1, 1, 1, 0.2f);
+        FrameworkEntry.UI.UICamera.GetComponent<UIBlurEffect>().EnableBlurRender(null, rt =>
         {
-            _blurCache = userdata as RenderTexture;
-            transform.Find("BgImg").GetComponent<RawImage>().texture = _blurCache;
-        }
-        else
-        {
-            transform.Find("BgImg").GetComponent<RawImage>().color = new Color(1, 1, 1, 0.2f);
-        }
+            _blurCache = rt;
+            _bgImg.texture = _blurCache;
+            _bgImg.color = Color.white;
+        });
 
         (transform as RectTransform).Fade(0);
         (transform as RectTransform).Fade(1, Constant.FadeTime);
@@ -214,10 +213,11 @@ public class UI_Setting : UIForm
         base.OnHide(userdata);
         if (_blurCache != null)
         {
+            _bgImg.texture = null;
             RenderTexture.ReleaseTemporary(_blurCache);
             _blurCache = null;
         }
-        transform.Find("BgImg").GetComponent<RawImage>().color = Color.white;
+        _bgImg.color = Color.white;
     }
 
     /// <summary>
